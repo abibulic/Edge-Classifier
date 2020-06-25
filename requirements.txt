@@ -1,0 +1,6 @@
+pytorch
+pytorch_lightning
+sklearn
+numpy
+rdkit
+networkx
