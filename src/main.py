@@ -37,7 +37,7 @@ def get_args():
     # paths
     parser.add_argument('--data_path', type=str, default='../data/qm9/dsgdb9nsd/',
                         help='Dataset dir path')
-    parser.add_argument('--weights_path', type=str, default='D:/WORK/PROJECTS/furnace_segm/models/', 
+    parser.add_argument('--weights_path', type=str, default='../models/', 
                         help='Weights dir path')
 
     # loss function parameters
