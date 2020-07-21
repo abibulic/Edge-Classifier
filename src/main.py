@@ -1,3 +1,4 @@
+import torch
 import argparse
 import edege_classifier_model as ecm
 
@@ -29,7 +30,7 @@ def get_args():
                         help='Pre-fetching threads.')
     parser.add_argument('--learning_rate', type=float, default=1e-3, 
                         help='Learning rate', dest='lr')    
-    parser.add_argument('--resume', type=str, default='', 
+    parser.add_argument('--resume', type=str, default='../models/epoch=8.ckpt', 
                         help='Path to a checkpoint from witch to resume training')
     parser.add_argument('--valid_split', type=float, default=0.1, 
                         help='Percent of the data that is used as validation (0-1)')
@@ -44,13 +45,15 @@ def get_args():
     
 
     # testing parameters
-    parser.add_argument('--model', type=str, default='../models/epoch=395.ckpt',
+    parser.add_argument('--test_model', type=bool, default=True,
+                        help='Test model')
+    parser.add_argument('--model', type=str, default='../models/epoch=8.ckpt',
                         help='Path to trained model')
 
     return parser.parse_args(args=[])
 
 
-def train():
+def run():
     args = get_args()
 
     model = ecm.EdgeClassifier(args)
@@ -67,14 +70,21 @@ def train():
     else:
         print('Start training from beginning...')
         trainer = ecm.pl.Trainer(gpus=args.n_gpus, max_epochs=args.epochs, auto_lr_find=False, checkpoint_callback=checkpoint_callback, profiler=False)
-  
-    trainer.fit(model)
+
+    if args.test_model:
+        trainer.test(model)
+    else:
+        trainer.fit(model)
 
 
-def test():
-    args = get_args()
+# def test():
+#     args = get_args()
 
-    
+#     model = ecm.EdgeClassifier(args)
+#     checkpoint = torch.load(args.model, map_location=lambda storage, loc: storage)
+#     model.load_state_dict(checkpoint['state_dict'])
+#     model.eval()
+
+
 if __name__ == "__main__":
-    train()
-    #test()
+    run()
